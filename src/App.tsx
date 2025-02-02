@@ -5,6 +5,9 @@ import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyReservations from "./pages/MyReservations";
+import Favorites from "./pages/Favorites";
+import CreateListing from "./pages/CreateListing";
+import EditListing from "./pages/EditListing";
 
 function App() {
   return (
@@ -22,6 +25,11 @@ function App() {
           }
         />
         <Route path="/my-reservations" element={<ProtectedRoute><MyReservations /></ProtectedRoute>} />
+        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/create-listing" element={<CreateListing />} />
+        <Route path="/edit-listing/:id" element={<EditListing />} />
+
+
       </Routes>
     </Router>
   );
