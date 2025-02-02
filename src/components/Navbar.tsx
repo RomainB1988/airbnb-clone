@@ -19,22 +19,22 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md p-4">
+    <nav className="bg-gradient-to-r from-blue-500 to-indigo-500 shadow-md p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Airbnb Clone</h1>
+        <h1 className="text-2xl font-bold text-white">Airbnb Clone</h1>
         <ul className="flex space-x-4">
-          <li><Link to="/" className="text-gray-700 hover:text-black">Accueil</Link></li>
+          <li><Link to="/" className="text-white hover:text-gray-200 transition">Accueil</Link></li>
           {user ? (
             <>
-              <li className="text-gray-700">Bienvenue, {user.displayName || "Utilisateur"}</li>
+              <li className="text-white">Bienvenue, {user.displayName || "Utilisateur"}</li>
               <li>
-                <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-1 rounded">
+                <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition">
                   Déconnexion
                 </button>
               </li>
             </>
           ) : (
-            <li><Link to="/login" className="text-gray-700 hover:text-black">Se connecter</Link></li>
+            <li><Link to="/login" className="text-white hover:text-gray-200 transition">Se connecter</Link></li>
           )}
         </ul>
       </div>

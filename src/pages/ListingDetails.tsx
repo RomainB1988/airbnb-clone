@@ -1,50 +1,81 @@
 import { useParams } from "react-router-dom";
-import Map, { Marker } from "react-map-gl";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { auth, db } from "../firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
+
+const GOOGLE_MAPS_API_KEY = "AIzaSyA6CI9bIGzcpHhEvis6zC26ciBgTRdaxrg";
+
+const containerStyle = {
+  width: "100%",
+  height: "400px",
+};
 
 const mockListings = [
-  { id: 1, title: "Appartement cosy à Paris", image: "https://source.unsplash.com/800x500/?apartment", price: 120, location: "Paris, France", lat: 48.8566, lng: 2.3522, description: "Un superbe appartement situé en plein cœur de Paris." },
-  { id: 2, title: "Villa avec piscine à Nice", image: "https://source.unsplash.com/800x500/?villa", price: 250, location: "Nice, France", lat: 43.7102, lng: 7.2620, description: "Une villa de rêve avec vue sur la mer." },
-  { id: 3, title: "Chalet en montagne", image: "https://source.unsplash.com/800x500/?chalet", price: 180, location: "Chamonix, France", lat: 45.9237, lng: 6.8694, description: "Un charmant chalet pour un séjour au calme." },
+  { id: 1, title: "Appartement cosy à Paris", image: "https://source.unsplash.com/800x500/?apartment", price: 120, location: "Paris, France", description: "Un appartement charmant et confortable au cœur de Paris.", lat: 48.8566, lng: 2.3522 },
+  { id: 2, title: "Villa avec piscine à Nice", image: "https://source.unsplash.com/800x500/?villa", price: 250, location: "Nice, France", description: "Une villa luxueuse avec piscine et vue sur la mer à Nice.", lat: 43.7034, lng: 7.2663 },
+  { id: 3, title: "Chalet en montagne", image: "https://source.unsplash.com/800x500/?chalet", price: 180, location: "Chamonix, France", description: "Un chalet chaleureux et accueillant en pleine montagne.", lat: 45.9237, lng: 6.8694 },
 ];
 
 const ListingDetails = () => {
   const { id } = useParams();
   const listing = mockListings.find((item) => item.id === Number(id));
-
-  if (!listing) {
-    return <h2 className="text-center text-2xl mt-10">Logement non trouvé 😢</h2>;
-  }
-
-  const viewport = {
-    latitude: listing.lat,
-    longitude: listing.lng,
-    zoom: 12,
-  };
+  const [user] = useAuthState(auth);
 
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
     if (!startDate || !endDate) {
       alert("Veuillez sélectionner une période valide !");
       return;
     }
-    alert(`Réservation confirmée du ${startDate.toLocaleDateString()} au ${endDate.toLocaleDateString()}`);
+    if (!user) {
+      alert("Vous devez être connecté pour réserver !");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "reservations"), {
+        userId: user.uid,
+        listingId: listing?.id,
+        title: listing?.title,
+        location: listing?.location,
+        price: listing?.price,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        createdAt: new Date().toISOString(),
+      });
+
+      alert(`Réservation confirmée du ${startDate.toLocaleDateString()} au ${endDate.toLocaleDateString()}`);
+    } catch (error) {
+      console.error("Erreur lors de la réservation :", error);
+      alert("Erreur lors de la réservation !");
+    }
   };
 
   return (
     <div className="container mx-auto mt-10 p-6">
-      <h1 className="text-3xl font-bold">{listing.title}</h1>
-      <p className="text-gray-600">{listing.location}</p>
-      <img src={listing.image} alt={listing.title} className="w-full h-96 object-cover rounded-lg mt-4" />
+      <h1 className="text-3xl font-bold">{listing?.title}</h1>
+      <p className="text-gray-600">{listing?.location}</p>
+      <img src={listing?.image} alt={listing?.title} className="w-full h-96 object-cover rounded-lg mt-4" />
+
+      {/* Carte Google Maps avec un marqueur standard */}
+      {listing && (
+        <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places", "marker"]}>
+          <GoogleMap mapContainerStyle={containerStyle} center={{ lat: listing.lat, lng: listing.lng }} zoom={14}>
+            <MarkerF position={{ lat: listing.lat, lng: listing.lng }} />
+          </GoogleMap>
+        </LoadScript>
+      )}
 
       <div className="mt-6">
         <h2 className="text-xl font-bold">Détails</h2>
-        <p className="text-gray-700 mt-2">{listing.description}</p>
-        <p className="text-gray-900 font-bold mt-2 text-lg">{listing.price}€ / nuit</p>
+        <p className="text-gray-700 mt-2">{listing?.description}</p>
+        <p className="text-gray-900 font-bold mt-2 text-lg">{listing?.price}€ / nuit</p>
       </div>
 
       {/* Formulaire de réservation */}
@@ -81,20 +112,6 @@ const ListingDetails = () => {
         >
           Réserver
         </button>
-      </div>
-
-      {/* Carte Mapbox */}
-      <div className="mt-8 h-80">
-        <Map
-          mapboxAccessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}
-          initialViewState={viewport}
-          style={{ width: "100%", height: "100%" }}
-          mapStyle="mapbox://styles/mapbox/streets-v11"
-        >
-          <Marker latitude={listing.lat} longitude={listing.lng}>
-            <div className="bg-red-500 w-3 h-3 rounded-full"></div>
-          </Marker>
-        </Map>
       </div>
     </div>
   );
