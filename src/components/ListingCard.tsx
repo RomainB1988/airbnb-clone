@@ -10,7 +10,7 @@ interface ListingProps {
   image: string;
   price: number;
   location: string;
-  userId: string; // Propriétaire de l'annonce
+  userId?: string; // Propriétaire de l'annonce
 }
 
 const ListingCard: React.FC<ListingProps> = ({ id, title, image, price, location, userId }) => {

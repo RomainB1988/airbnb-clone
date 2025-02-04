@@ -11,7 +11,7 @@ import EditListing from "./pages/EditListing";
 
 function App() {
   return (
-    <Router>
+    <Router basename="/airbnb-clone">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

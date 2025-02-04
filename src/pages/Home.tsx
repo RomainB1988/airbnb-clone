@@ -29,7 +29,7 @@ const staticListings = [
   {
     id: 4,
     title: "Loft moderne à Lyon",
-    image: "https://images.unsplash.com/photo-1571055107559-3e67626f86f2",
+    image: "https://images.pexels.com/photos/4703/inside-apartment-design-home.jpg",
     price: 140,
     location: "Lyon, France",
   },
@@ -43,7 +43,7 @@ const staticListings = [
   {
     id: 6,
     title: "Appartement avec terrasse à Bordeaux",
-    image: "https://images.unsplash.com/photo-1560185007-a5ef5b951a04",
+    image: "https://images.pexels.com/photos/206172/pexels-photo-206172.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     price: 160,
     location: "Bordeaux, France",
   },
@@ -57,7 +57,7 @@ const staticListings = [
   {
     id: 8,
     title: "Studio économique à Toulouse",
-    image: "https://images.unsplash.com/photo-1598928636135-d6ddca51f3d8",
+    image: "https://images.pexels.com/photos/53610/large-home-residential-house-architecture-53610.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     price: 90,
     location: "Toulouse, France",
   },

@@ -6,4 +6,4 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   base: "/airbnb-clone/",
   plugins: [react(), tailwindcss(),],
-})
+});

@@ -6,7 +6,7 @@
   "homepage": "https://RomainB1988.github.io/airbnb-clone",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
